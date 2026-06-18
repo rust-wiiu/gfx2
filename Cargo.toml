@@ -10,8 +10,8 @@ documentation = "https://github.com/rust-wiiu/gfd"
 publish = false
 
 [dependencies]
-byteorder = "1.5.0"
-num_enum = "0.7.6"
+binrw = { version = "0.15.1", default-features = false }
+bitflags = { version = "2.13.0", default-features = false }
 serde = { version = "1.0.228", features = ["derive"] }
 serde-big-array = "0.5.1"
 
