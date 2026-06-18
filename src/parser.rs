@@ -1,4 +1,4 @@
-use alloc::{boxed::Box, vec::Vec};
+use alloc::{boxed::Box, string::ToString, vec::Vec};
 use binrw::{
     BinRead, BinResult, FilePtr, NullString, binread,
     file_ptr::IntoSeekFrom,
@@ -6,6 +6,7 @@ use binrw::{
     io::{Read, Seek, SeekFrom},
 };
 use bitflags::bitflags;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy)]
 pub struct TaggedOffset<const TAG: u16>(pub u32);
@@ -48,19 +49,23 @@ pub type StringOffset = TaggedOffset<0xCA7>;
 #[br(big)]
 #[derive(Debug)]
 pub struct FileHeader {
+    #[br(assert(magic == *b"Gfx2"))]
     pub magic: [u8; 4],
+    #[br(assert(header_size == size_of::<FileHeader>() as u32))]
     pub header_size: u32,
     pub major_version: u32,
     pub minor_version: u32,
     pub gpu_version: u32,
+    #[br(assert(alignment_mode == 0 || alignment_mode == 1))]
     pub alignment_mode: u32,
-    pub padding: u64,
+    pub padding: [u8; 8],
 }
 
 #[binread]
 #[br(big)]
 #[derive(Debug)]
 pub struct Block {
+    #[br(assert(magic == *b"BLK{"))]
     pub magic: [u8; 4],
     pub header_size: u32,
     pub major_version: u32,
@@ -87,7 +92,7 @@ pub enum BlockType {
     GeometryCopyProgram = 10,
     TextureHeader = 11,
     TextureImageData = 12,
-    TextureMipmipData = 13,
+    TextureMipmapData = 13,
     ComputeHeader = 14,
     ComputeProgram = 15,
 }
@@ -118,18 +123,25 @@ pub enum BlockData {
     #[br(pre_assert(ty == BlockType::ComputeProgram))]
     ComputeProgram(#[br(count = size)] Vec<u8>),
     //
+    #[br(pre_assert(ty == BlockType::TextureHeader))]
+    TextureHeader(TextureHeader),
+    #[br(pre_assert(ty == BlockType::TextureImageData))]
+    TextureImage(#[br(count = size)] Vec<u8>),
+    #[br(pre_assert(ty == BlockType::TextureMipmapData))]
+    TextureMipmap(#[br(count = size)] Vec<u8>),
+    //
     #[br(pre_assert(size == 0 || ty == BlockType::Padding))]
     None,
 }
 
 #[binread]
 #[br(repr = u32)]
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum ShaderMode {
-    UniformRegister,
-    UniformBlock,
-    GeometryShader,
-    ComputeShader,
+    UniformRegister = 0,
+    UniformBlock = 1,
+    GeometryShader = 2,
+    ComputeShader = 3,
 }
 
 #[binread]
@@ -142,9 +154,19 @@ pub struct UniformBlock {
     pub size: u32,
 }
 
+impl Into<crate::UniformBlock> for UniformBlock {
+    fn into(self) -> crate::UniformBlock {
+        crate::UniformBlock {
+            name: self.name.into_inner().to_string(),
+            offset: self.offset,
+            size: self.size,
+        }
+    }
+}
+
 #[binread]
 #[br(repr = u32)]
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum VarType {
     Void = 0,
     Bool = 1,
@@ -198,9 +220,20 @@ pub struct UniformVar {
     pub block: u32,
 }
 
+impl Into<crate::UniformVar> for UniformVar {
+    fn into(self) -> crate::UniformVar {
+        crate::UniformVar {
+            name: self.name.into_inner().to_string(),
+            ty: self.ty,
+            offset: self.offset,
+            block: self.block,
+        }
+    }
+}
+
 #[binread]
 #[br(big)]
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct InitialValue {
     pub value: [f32; 4],
     pub offset: u32,
@@ -208,7 +241,7 @@ pub struct InitialValue {
 
 #[binread]
 #[br(big)]
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct LoopVar {
     pub offset: u32,
     pub value: u32,
@@ -216,7 +249,7 @@ pub struct LoopVar {
 
 #[binread]
 #[br(repr = u32)]
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum SamplerType {
     D1 = 0,
     D2 = 1,
@@ -234,6 +267,16 @@ pub struct SamplerVar {
     pub location: u32,
 }
 
+impl Into<crate::SamplerVar> for SamplerVar {
+    fn into(self) -> crate::SamplerVar {
+        crate::SamplerVar {
+            name: self.name.into_inner().to_string(),
+            ty: self.ty,
+            location: self.location,
+        }
+    }
+}
+
 #[binread]
 #[br(big, import(base: u64))]
 #[derive(Debug)]
@@ -243,6 +286,17 @@ pub struct AttribVar {
     pub ty: VarType,
     pub count: u32,
     pub location: u32,
+}
+
+impl Into<crate::AttribVar> for AttribVar {
+    fn into(self) -> crate::AttribVar {
+        crate::AttribVar {
+            name: self.name.into_inner().to_string(),
+            ty: self.ty,
+            count: self.count,
+            location: self.location,
+        }
+    }
 }
 
 #[binread]
@@ -380,7 +434,7 @@ pub struct ComputeHeader {
     #[br(temp, try_calc = s.stream_position())]
     base: u64,
 
-    pub regs: [u32; 19],
+    pub regs: [u32; 12],
     pub program_size: u32,
     pub program_ptr: u32,
     pub mode: ShaderMode,
@@ -417,7 +471,7 @@ pub struct ComputeHeader {
 #[binread]
 #[br(big)]
 #[derive(Debug)]
-pub struct Texture {
+pub struct TextureHeader {
     pub surface: Surface,
     pub view_first_mip: u32,
     pub view_num_mips: u32,
@@ -452,7 +506,7 @@ pub struct Surface {
 
 #[binread]
 #[br(big, repr = u32)]
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum Dimension {
     D1 = 0,
     D2 = 1,
@@ -466,7 +520,7 @@ pub enum Dimension {
 
 #[binread]
 #[br(big, repr = u32)]
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum Format {
     Invalid = 0x0,
     UnormR8 = 0x1,
@@ -538,7 +592,7 @@ pub enum Format {
 
 #[binread]
 #[br(big, repr = u32)]
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum AntiAlias {
     Mode1x = 0,
     Mode2x = 1,
@@ -548,7 +602,7 @@ pub enum AntiAlias {
 
 #[binread]
 #[br(big, repr = u32)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub enum TileMode {
     #[default]
     Default = 0,
@@ -571,7 +625,7 @@ pub enum TileMode {
 }
 
 bitflags! {
-    #[derive(Debug)]
+    #[derive(Debug, Serialize, Deserialize)]
     pub struct Usage: u32 {
         const NONE = 0x0;
         const TEXTURE = 0x1;
@@ -602,19 +656,4 @@ pub struct Gfx2 {
     pub header: FileHeader,
     #[br(parse_with = until(|b: &Block| b.block_type == BlockType::EndOfFile))]
     pub blocks: Vec<Block>,
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use binrw::io::Cursor;
-
-    #[test]
-    fn test() {
-        let gsh = include_bytes!("../tests/program.gsh");
-
-        let gfx = Gfx2::read(&mut Cursor::new(&gsh)).unwrap();
-
-        println!("{gfx:?}");
-    }
 }

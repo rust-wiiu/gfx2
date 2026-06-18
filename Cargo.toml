@@ -1,20 +1,27 @@
 [package]
-name = "gfd"
+name = "gfx2"
 version = "0.2.0"
 edition = "2024"
 readme = "README.md"
 license-file = "LICENSE"
-description = "Read and write GFD shader binaries."
-repository = "https://github.com/rust-wiiu/gfd"
-documentation = "https://github.com/rust-wiiu/gfd"
-publish = false
+description = "Parse Gfx2 shader binaries."
+repository = "https://github.com/rust-wiiu/gfx2"
+documentation = "https://github.com/rust-wiiu/gfx2"
+keywords = ["nintendo", "homebrew", "wiiu"]
+include = ["Cargo.toml", "Cargo.lock", "LICENSE*", "README*", "src/**/*"]
 
 [dependencies]
 binrw = { version = "0.15.1", default-features = false }
-bitflags = { version = "2.13.0", default-features = false }
+bitflags = { version = "2.13.0", default-features = false, features = [
+    "serde",
+] }
 serde = { version = "1.0.228", features = ["derive"] }
 serde-big-array = "0.5.1"
+thiserror = { version = "2.0.18", default-features = false }
 
 [dev-dependencies]
-pretty_assertions = "1.4.1"
 serde_json = "1.0.149"
+
+[package.metadata.release]
+publish = false
+push = true

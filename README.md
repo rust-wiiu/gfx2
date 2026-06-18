@@ -1,27 +1,22 @@
-# GFD - Nintendo Wii U™ Shader Binary Format
+# Gfx2 - Nintendo Wii U™ Shader Binary Format
 
-Unlike more modern graphics APIs the Nintendo Wii U does not have a online shader compiler, so the shaders have to be pre-compiled and embedded into the program or stored in the file system. The most common format for such shader binaries is GFD (`.gsh` / `.gtx`). This crate enables easy parsing of the binary format into "Rust-native" structures (Vec & String instead of raw pointers).
-
-**This crate does not provide a shader compiler**.
+Unlike more modern graphics APIs the Nintendo Wii U does not have a online shader compiler, so the shaders have to be pre-compiled and embedded into the program or stored in the file system. The most common format for such shader binaries is Gfx2 (`.gsh` / `.gtx`). This crate enables easy parsing of the binary format into "Rust-native" structures (Vec & String instead of raw pointers) and storing shaders in alternative data formats via serde.
 
 ## Usage
 
-### Cargo.toml
-
 ```
-[dependencies]
-gfd = { git = "https://github.com/rust-wiiu/gfd", tag = "v0.2.0" }
+cargo add gfx2
 ```
 
 ### main.rs
 
 ```rust,no_run
-use gfd::GFD;
+use gfx2::Gfx2;
 use std::fs;
 
 fn main() {
     let bytes = fs::read("shader.gsh").unwrap();
-    let gfd = GFD::parse(&bytes).unwrap();
+    let gfx2 = Gfx2::parse(&bytes).unwrap();
 }
 ```
 
