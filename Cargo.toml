@@ -6,7 +6,6 @@ readme = "README.md"
 license-file = "LICENSE"
 description = "Parse Gfx2 shader binaries."
 repository = "https://github.com/rust-wiiu/gfx2"
-documentation = "https://github.com/rust-wiiu/gfx2"
 keywords = ["nintendo", "homebrew", "wiiu"]
 include = ["Cargo.toml", "Cargo.lock", "LICENSE*", "README*", "src/**/*"]
 
