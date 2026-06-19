@@ -83,7 +83,7 @@ pub enum Block {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UniformBlock {
     pub name: String,
-    pub offset: u32,
+    pub location: u32,
     pub size: u32,
 }
 
@@ -91,8 +91,9 @@ pub struct UniformBlock {
 pub struct UniformVar {
     pub name: String,
     pub ty: VarType,
+    pub count: u32,
     pub offset: u32,
-    pub block: u32,
+    pub index: u32,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

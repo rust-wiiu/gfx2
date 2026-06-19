@@ -158,7 +158,7 @@ impl Into<crate::UniformBlock> for UniformBlock {
     fn into(self) -> crate::UniformBlock {
         crate::UniformBlock {
             name: self.name.into_inner().to_string(),
-            offset: self.offset,
+            location: self.offset,
             size: self.size,
         }
     }
@@ -226,7 +226,7 @@ impl Into<crate::UniformVar> for UniformVar {
             name: self.name.into_inner().to_string(),
             ty: self.ty,
             offset: self.offset,
-            block: self.block,
+            index: self.block,
         }
     }
 }
