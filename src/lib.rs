@@ -15,69 +15,75 @@ pub use parser::{
 };
 
 #[derive(Debug, Serialize, Deserialize)]
-pub enum Block {
-    VertexShader {
-        #[serde(with = "BigArray")]
-        regs: [u32; 52],
-        program: Vec<u8>,
-        mode: ShaderMode,
-        uniform_blocks: Vec<UniformBlock>,
-        uniform_vars: Vec<UniformVar>,
-        initial_values: Vec<InitialValue>,
-        loop_vars: Vec<LoopVar>,
-        sampler_vars: Vec<SamplerVar>,
-        attrib_vars: Vec<AttribVar>,
-        ring_item_size: u32,
-        has_stream_out: bool,
-        stream_out_stride: [u32; 4],
-    },
-    PixelShader {
-        #[serde(with = "BigArray")]
-        regs: [u32; 41],
-        program: Vec<u8>,
-        mode: ShaderMode,
-        uniform_blocks: Vec<UniformBlock>,
-        uniform_vars: Vec<UniformVar>,
-        initial_values: Vec<InitialValue>,
-        loop_vars: Vec<LoopVar>,
-        sampler_vars: Vec<SamplerVar>,
-    },
-    GeometryShader {
-        regs: [u32; 19],
-        program: Vec<u8>,
-        copy_program: Vec<u8>,
-        mode: ShaderMode,
-        uniform_blocks: Vec<UniformBlock>,
-        uniform_vars: Vec<UniformVar>,
-        initial_values: Vec<InitialValue>,
-        loop_vars: Vec<LoopVar>,
-        sampler_vars: Vec<SamplerVar>,
-        ring_item_size: u32,
-        has_stream_out: bool,
-        stream_out_stride: [u32; 4],
-    },
-    ComputeShader {
-        regs: [u32; 12],
-        program: Vec<u8>,
-        mode: ShaderMode,
-        uniform_blocks: Vec<UniformBlock>,
-        uniform_vars: Vec<UniformVar>,
-        initial_values: Vec<InitialValue>,
-        loop_vars: Vec<LoopVar>,
-        sampler_vars: Vec<SamplerVar>,
-        work_group_size: (u32, u32, u32),
-        over_64_mode: bool,
-        waves_per_simd: u32,
-    },
-    Texture {
-        surface: Surface,
-        view_first_mip: u32,
-        view_num_mips: u32,
-        view_first_slice: u32,
-        view_num_slices: u32,
-        comp_map: u32,
-        regs: [u32; 5],
-    },
+pub struct VertexShader {
+    #[serde(with = "BigArray")]
+    regs: [u32; 52],
+    program: Vec<u8>,
+    mode: ShaderMode,
+    uniform_blocks: Vec<UniformBlock>,
+    uniform_vars: Vec<UniformVar>,
+    initial_values: Vec<InitialValue>,
+    loop_vars: Vec<LoopVar>,
+    sampler_vars: Vec<SamplerVar>,
+    attrib_vars: Vec<AttribVar>,
+    ring_item_size: u32,
+    has_stream_out: bool,
+    stream_out_stride: [u32; 4],
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PixelShader {
+    #[serde(with = "BigArray")]
+    regs: [u32; 41],
+    program: Vec<u8>,
+    mode: ShaderMode,
+    uniform_blocks: Vec<UniformBlock>,
+    uniform_vars: Vec<UniformVar>,
+    initial_values: Vec<InitialValue>,
+    loop_vars: Vec<LoopVar>,
+    sampler_vars: Vec<SamplerVar>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct GeometryShader {
+    regs: [u32; 19],
+    program: Vec<u8>,
+    copy_program: Vec<u8>,
+    mode: ShaderMode,
+    uniform_blocks: Vec<UniformBlock>,
+    uniform_vars: Vec<UniformVar>,
+    initial_values: Vec<InitialValue>,
+    loop_vars: Vec<LoopVar>,
+    sampler_vars: Vec<SamplerVar>,
+    ring_item_size: u32,
+    has_stream_out: bool,
+    stream_out_stride: [u32; 4],
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ComputeShader {
+    regs: [u32; 12],
+    program: Vec<u8>,
+    mode: ShaderMode,
+    uniform_blocks: Vec<UniformBlock>,
+    uniform_vars: Vec<UniformVar>,
+    initial_values: Vec<InitialValue>,
+    loop_vars: Vec<LoopVar>,
+    sampler_vars: Vec<SamplerVar>,
+    work_group_size: (u32, u32, u32),
+    over_64_mode: bool,
+    waves_per_simd: u32,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Texture {
+    surface: Surface,
+    view_first_mip: u32,
+    view_num_mips: u32,
+    view_first_slice: u32,
+    view_num_slices: u32,
+    comp_map: u32,
+    regs: [u32; 5],
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -136,7 +142,12 @@ pub struct Gfx2 {
     pub version: (u8, u8),
     pub gpu: u8,
     // pub align: u32,
-    pub blocks: Vec<Block>,
+    // pub blocks: Vec<Block>,
+    pub vertex: Vec<VertexShader>,
+    pub pixel: Vec<PixelShader>,
+    pub geometry: Vec<GeometryShader>,
+    pub compute: Vec<ComputeShader>,
+    pub texture: Vec<Texture>,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -174,7 +185,11 @@ impl TryFrom<parser::Gfx2> for Gfx2 {
                 value.header.minor_version as u8,
             ),
             gpu: value.header.gpu_version as u8,
-            blocks: Vec::new(),
+            vertex: Vec::new(),
+            pixel: Vec::new(),
+            geometry: Vec::new(),
+            compute: Vec::new(),
+            texture: Vec::new(),
         };
 
         let mut blocks = value.blocks.into_iter().enumerate();
@@ -200,7 +215,7 @@ impl TryFrom<parser::Gfx2> for Gfx2 {
                 (Type::VertexHeader, Data::VertexHeader(header)) => {
                     let program = next_block!(blocks, Data::VertexProgram, i + 1);
 
-                    s.blocks.push(Block::VertexShader {
+                    s.vertex.push(VertexShader {
                         regs: header.regs,
                         program,
                         mode: header.mode,
@@ -238,7 +253,7 @@ impl TryFrom<parser::Gfx2> for Gfx2 {
                 (Type::PixelHeader, Data::PixelHeader(header)) => {
                     let program = next_block!(blocks, Data::PixelProgram, i + 1);
 
-                    s.blocks.push(Block::PixelShader {
+                    s.pixel.push(PixelShader {
                         regs: header.regs,
                         program,
                         mode: header.mode,
@@ -268,7 +283,7 @@ impl TryFrom<parser::Gfx2> for Gfx2 {
                     let program = next_block!(blocks, Data::PixelProgram, i + 1);
                     let copy_program = next_block!(blocks, Data::GeometryCopyProgram, i + 2);
 
-                    s.blocks.push(Block::GeometryShader {
+                    s.geometry.push(GeometryShader {
                         regs: header.regs,
                         program,
                         copy_program,
@@ -301,7 +316,7 @@ impl TryFrom<parser::Gfx2> for Gfx2 {
                 (Type::ComputeHeader, Data::ComputeHeader(header)) => {
                     let program = next_block!(blocks, Data::ComputeProgram, i + 1);
 
-                    s.blocks.push(Block::ComputeShader {
+                    s.compute.push(ComputeShader {
                         regs: header.regs,
                         program,
                         mode: header.mode,
@@ -338,7 +353,7 @@ impl TryFrom<parser::Gfx2> for Gfx2 {
                     let image = next_block!(blocks, Data::ComputeProgram, i + 1);
                     let mipmap = next_block!(blocks, Data::ComputeProgram, i + 2);
 
-                    s.blocks.push(Block::Texture {
+                    s.texture.push(Texture {
                         surface: Surface {
                             dimension: header.surface.dimension,
                             width: header.surface.width,
@@ -384,9 +399,7 @@ mod tests {
 
         assert_eq!(gfx2.version, (7, 1));
         assert_eq!(gfx2.gpu, 2);
-        assert_eq!(gfx2.blocks.len(), 2);
-
-        assert!(matches!(gfx2.blocks[0], Block::VertexShader { .. }));
-        assert!(matches!(gfx2.blocks[1], Block::PixelShader { .. }));
+        assert_eq!(gfx2.vertex.len(), 1);
+        assert_eq!(gfx2.pixel.len(), 1);
     }
 }
