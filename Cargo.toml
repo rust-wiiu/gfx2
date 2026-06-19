@@ -12,9 +12,9 @@ include = ["Cargo.toml", "Cargo.lock", "LICENSE*", "README*", "src/**/*"]
 [dependencies]
 binrw = { version = "0.15.1", default-features = false }
 bitflags = { version = "2.13.0", default-features = false, features = [
-    "serde_core",
+    "serde",
 ] }
-serde = { version = "1.0.228", features = ["derive"] }
+serde = { version = "1.0.228", features = ["derive", "alloc"] }
 serde-big-array = "0.5.1"
 thiserror = { version = "2.0.18", default-features = false }
 
