@@ -216,17 +216,19 @@ pub struct UniformVar {
     #[br(offset = base)]
     pub name: FilePtr<StringOffset, NullString>,
     pub ty: VarType,
+    pub count: u32,
     pub offset: u32,
-    pub block: u32,
+    pub index: u32,
 }
 
 impl Into<crate::UniformVar> for UniformVar {
     fn into(self) -> crate::UniformVar {
         crate::UniformVar {
             name: self.name.into_inner().to_string(),
+            count: self.count,
             ty: self.ty,
             offset: self.offset,
-            index: self.block,
+            index: self.index,
         }
     }
 }
