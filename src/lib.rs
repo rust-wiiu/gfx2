@@ -17,73 +17,73 @@ pub use parser::{
 #[derive(Debug, Serialize, Deserialize)]
 pub struct VertexShader {
     #[serde(with = "BigArray")]
-    regs: [u32; 52],
-    program: Vec<u8>,
-    mode: ShaderMode,
-    uniform_blocks: Vec<UniformBlock>,
-    uniform_vars: Vec<UniformVar>,
-    initial_values: Vec<InitialValue>,
-    loop_vars: Vec<LoopVar>,
-    sampler_vars: Vec<SamplerVar>,
-    attrib_vars: Vec<AttribVar>,
-    ring_item_size: u32,
-    has_stream_out: bool,
-    stream_out_stride: [u32; 4],
+    pub regs: [u32; 52],
+    pub program: Vec<u8>,
+    pub mode: ShaderMode,
+    pub uniform_blocks: Vec<UniformBlock>,
+    pub uniform_vars: Vec<UniformVar>,
+    pub initial_values: Vec<InitialValue>,
+    pub loop_vars: Vec<LoopVar>,
+    pub sampler_vars: Vec<SamplerVar>,
+    pub attrib_vars: Vec<AttribVar>,
+    pub ring_item_size: u32,
+    pub has_stream_out: bool,
+    pub stream_out_stride: [u32; 4],
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PixelShader {
     #[serde(with = "BigArray")]
-    regs: [u32; 41],
-    program: Vec<u8>,
-    mode: ShaderMode,
-    uniform_blocks: Vec<UniformBlock>,
-    uniform_vars: Vec<UniformVar>,
-    initial_values: Vec<InitialValue>,
-    loop_vars: Vec<LoopVar>,
-    sampler_vars: Vec<SamplerVar>,
+    pub regs: [u32; 41],
+    pub program: Vec<u8>,
+    pub mode: ShaderMode,
+    pub uniform_blocks: Vec<UniformBlock>,
+    pub uniform_vars: Vec<UniformVar>,
+    pub initial_values: Vec<InitialValue>,
+    pub loop_vars: Vec<LoopVar>,
+    pub sampler_vars: Vec<SamplerVar>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct GeometryShader {
-    regs: [u32; 19],
-    program: Vec<u8>,
-    copy_program: Vec<u8>,
-    mode: ShaderMode,
-    uniform_blocks: Vec<UniformBlock>,
-    uniform_vars: Vec<UniformVar>,
-    initial_values: Vec<InitialValue>,
-    loop_vars: Vec<LoopVar>,
-    sampler_vars: Vec<SamplerVar>,
-    ring_item_size: u32,
-    has_stream_out: bool,
-    stream_out_stride: [u32; 4],
+    pub regs: [u32; 19],
+    pub program: Vec<u8>,
+    pub copy_program: Vec<u8>,
+    pub mode: ShaderMode,
+    pub uniform_blocks: Vec<UniformBlock>,
+    pub uniform_vars: Vec<UniformVar>,
+    pub initial_values: Vec<InitialValue>,
+    pub loop_vars: Vec<LoopVar>,
+    pub sampler_vars: Vec<SamplerVar>,
+    pub ring_item_size: u32,
+    pub has_stream_out: bool,
+    pub stream_out_stride: [u32; 4],
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ComputeShader {
-    regs: [u32; 12],
-    program: Vec<u8>,
-    mode: ShaderMode,
-    uniform_blocks: Vec<UniformBlock>,
-    uniform_vars: Vec<UniformVar>,
-    initial_values: Vec<InitialValue>,
-    loop_vars: Vec<LoopVar>,
-    sampler_vars: Vec<SamplerVar>,
-    work_group_size: (u32, u32, u32),
-    over_64_mode: bool,
-    waves_per_simd: u32,
+    pub regs: [u32; 12],
+    pub program: Vec<u8>,
+    pub mode: ShaderMode,
+    pub uniform_blocks: Vec<UniformBlock>,
+    pub uniform_vars: Vec<UniformVar>,
+    pub initial_values: Vec<InitialValue>,
+    pub loop_vars: Vec<LoopVar>,
+    pub sampler_vars: Vec<SamplerVar>,
+    pub work_group_size: (u32, u32, u32),
+    pub over_64_mode: bool,
+    pub waves_per_simd: u32,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Texture {
-    surface: Surface,
-    view_first_mip: u32,
-    view_num_mips: u32,
-    view_first_slice: u32,
-    view_num_slices: u32,
-    comp_map: u32,
-    regs: [u32; 5],
+    pub surface: Surface,
+    pub view_first_mip: u32,
+    pub view_num_mips: u32,
+    pub view_first_slice: u32,
+    pub view_num_slices: u32,
+    pub comp_map: u32,
+    pub regs: [u32; 5],
 }
 
 #[derive(Debug, Serialize, Deserialize)]
