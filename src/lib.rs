@@ -31,6 +31,65 @@ pub struct VertexShader {
     pub stream_out_stride: [u32; 4],
 }
 
+impl VertexShader {
+    pub const SQ_PGM_RESOURCES_VS: usize = 0;
+    pub const VGT_PRIMITIVEID_EN: usize = 1;
+    pub const SPI_VS_OUT_CONFIG: usize = 2;
+    pub const NUM_SPI_VS_OUT_ID: usize = 3;
+
+    pub const SPI_VS_OUT_ID_0: usize = 4;
+    pub const SPI_VS_OUT_ID_1: usize = 5;
+    pub const SPI_VS_OUT_ID_2: usize = 6;
+    pub const SPI_VS_OUT_ID_3: usize = 7;
+    pub const SPI_VS_OUT_ID_4: usize = 8;
+    pub const SPI_VS_OUT_ID_5: usize = 9;
+    pub const SPI_VS_OUT_ID_6: usize = 10;
+    pub const SPI_VS_OUT_ID_7: usize = 11;
+    pub const SPI_VS_OUT_ID_8: usize = 12;
+    pub const SPI_VS_OUT_ID_9: usize = 13;
+
+    pub const PA_CL_VS_OUT_CNTL: usize = 14;
+    pub const SQ_VTX_SEMANTIC_CLEAR: usize = 15;
+    pub const NUM_SQ_VTX_SEMANTIC: usize = 16;
+
+    pub const SQ_VTX_SEMANTIC_0: usize = 17;
+    pub const SQ_VTX_SEMANTIC_1: usize = 18;
+    pub const SQ_VTX_SEMANTIC_2: usize = 19;
+    pub const SQ_VTX_SEMANTIC_3: usize = 20;
+    pub const SQ_VTX_SEMANTIC_4: usize = 21;
+    pub const SQ_VTX_SEMANTIC_5: usize = 22;
+    pub const SQ_VTX_SEMANTIC_6: usize = 23;
+    pub const SQ_VTX_SEMANTIC_7: usize = 24;
+    pub const SQ_VTX_SEMANTIC_8: usize = 25;
+    pub const SQ_VTX_SEMANTIC_9: usize = 26;
+    pub const SQ_VTX_SEMANTIC_10: usize = 27;
+    pub const SQ_VTX_SEMANTIC_11: usize = 28;
+    pub const SQ_VTX_SEMANTIC_12: usize = 29;
+    pub const SQ_VTX_SEMANTIC_13: usize = 30;
+    pub const SQ_VTX_SEMANTIC_14: usize = 31;
+    pub const SQ_VTX_SEMANTIC_15: usize = 32;
+    pub const SQ_VTX_SEMANTIC_16: usize = 33;
+    pub const SQ_VTX_SEMANTIC_17: usize = 34;
+    pub const SQ_VTX_SEMANTIC_18: usize = 35;
+    pub const SQ_VTX_SEMANTIC_19: usize = 36;
+    pub const SQ_VTX_SEMANTIC_20: usize = 37;
+    pub const SQ_VTX_SEMANTIC_21: usize = 38;
+    pub const SQ_VTX_SEMANTIC_22: usize = 39;
+    pub const SQ_VTX_SEMANTIC_23: usize = 40;
+    pub const SQ_VTX_SEMANTIC_24: usize = 41;
+    pub const SQ_VTX_SEMANTIC_25: usize = 42;
+    pub const SQ_VTX_SEMANTIC_26: usize = 43;
+    pub const SQ_VTX_SEMANTIC_27: usize = 44;
+    pub const SQ_VTX_SEMANTIC_28: usize = 45;
+    pub const SQ_VTX_SEMANTIC_29: usize = 46;
+    pub const SQ_VTX_SEMANTIC_30: usize = 47;
+    pub const SQ_VTX_SEMANTIC_31: usize = 48;
+
+    pub const VGT_STRMOUT_BUFFER_EN: usize = 49;
+    pub const VGT_VERTEX_REUSE_BLOCK_CNTL: usize = 50;
+    pub const VGT_HOS_REUSE_DEPTH: usize = 51;
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PixelShader {
     #[serde(with = "BigArray")]
@@ -42,6 +101,52 @@ pub struct PixelShader {
     pub initial_values: Vec<InitialValue>,
     pub loop_vars: Vec<LoopVar>,
     pub sampler_vars: Vec<SamplerVar>,
+}
+
+impl PixelShader {
+    pub const SQ_PGM_RESOURCES_PS: usize = 0;
+    pub const SQ_PGM_EXPORTS_PS: usize = 1;
+    pub const SPI_PS_IN_CONTROL_0: usize = 2;
+    pub const SPI_PS_IN_CONTROL_1: usize = 3;
+    pub const NUM_SPI_PS_INPUT_CNTL: usize = 4;
+
+    pub const SPI_PS_INPUT_CNTL_0: usize = 5;
+    pub const SPI_PS_INPUT_CNTL_1: usize = 6;
+    pub const SPI_PS_INPUT_CNTL_2: usize = 7;
+    pub const SPI_PS_INPUT_CNTL_3: usize = 8;
+    pub const SPI_PS_INPUT_CNTL_4: usize = 9;
+    pub const SPI_PS_INPUT_CNTL_5: usize = 10;
+    pub const SPI_PS_INPUT_CNTL_6: usize = 11;
+    pub const SPI_PS_INPUT_CNTL_7: usize = 12;
+    pub const SPI_PS_INPUT_CNTL_8: usize = 13;
+    pub const SPI_PS_INPUT_CNTL_9: usize = 14;
+    pub const SPI_PS_INPUT_CNTL_10: usize = 15;
+    pub const SPI_PS_INPUT_CNTL_11: usize = 16;
+    pub const SPI_PS_INPUT_CNTL_12: usize = 17;
+    pub const SPI_PS_INPUT_CNTL_13: usize = 18;
+    pub const SPI_PS_INPUT_CNTL_14: usize = 19;
+    pub const SPI_PS_INPUT_CNTL_15: usize = 20;
+    pub const SPI_PS_INPUT_CNTL_16: usize = 21;
+    pub const SPI_PS_INPUT_CNTL_17: usize = 22;
+    pub const SPI_PS_INPUT_CNTL_18: usize = 23;
+    pub const SPI_PS_INPUT_CNTL_19: usize = 24;
+    pub const SPI_PS_INPUT_CNTL_20: usize = 25;
+    pub const SPI_PS_INPUT_CNTL_21: usize = 26;
+    pub const SPI_PS_INPUT_CNTL_22: usize = 27;
+    pub const SPI_PS_INPUT_CNTL_23: usize = 28;
+    pub const SPI_PS_INPUT_CNTL_24: usize = 29;
+    pub const SPI_PS_INPUT_CNTL_25: usize = 30;
+    pub const SPI_PS_INPUT_CNTL_26: usize = 31;
+    pub const SPI_PS_INPUT_CNTL_27: usize = 32;
+    pub const SPI_PS_INPUT_CNTL_28: usize = 33;
+    pub const SPI_PS_INPUT_CNTL_29: usize = 34;
+    pub const SPI_PS_INPUT_CNTL_30: usize = 35;
+    pub const SPI_PS_INPUT_CNTL_31: usize = 36;
+
+    pub const CB_SHADER_MASK: usize = 37;
+    pub const CB_SHADER_CONTROL: usize = 38;
+    pub const DB_SHADER_CONTROL: usize = 39;
+    pub const SPI_INPUT_Z: usize = 40;
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
