@@ -136,7 +136,7 @@ pub enum BlockData {
 
 #[binread]
 #[br(repr = u32)]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum ShaderMode {
     UniformRegister = 0,
     UniformBlock = 1,
@@ -166,7 +166,7 @@ impl Into<crate::UniformBlock> for UniformBlock {
 
 #[binread]
 #[br(repr = u32)]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum VarType {
     Void = 0,
     Bool = 1,
@@ -235,7 +235,7 @@ impl Into<crate::UniformVar> for UniformVar {
 
 #[binread]
 #[br(big)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct InitialValue {
     pub value: [f32; 4],
     pub offset: u32,
@@ -243,7 +243,7 @@ pub struct InitialValue {
 
 #[binread]
 #[br(big)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct LoopVar {
     pub offset: u32,
     pub value: u32,
@@ -251,7 +251,7 @@ pub struct LoopVar {
 
 #[binread]
 #[br(repr = u32)]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum SamplerType {
     D1 = 0,
     D2 = 1,
@@ -508,7 +508,7 @@ pub struct Surface {
 
 #[binread]
 #[br(big, repr = u32)]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum Dimension {
     D1 = 0,
     D2 = 1,
@@ -522,7 +522,7 @@ pub enum Dimension {
 
 #[binread]
 #[br(big, repr = u32)]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum Format {
     Invalid = 0x0,
     UnormR8 = 0x1,
@@ -594,7 +594,7 @@ pub enum Format {
 
 #[binread]
 #[br(big, repr = u32)]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum AntiAlias {
     Mode1x = 0,
     Mode2x = 1,
@@ -604,7 +604,7 @@ pub enum AntiAlias {
 
 #[binread]
 #[br(big, repr = u32)]
-#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize, PartialEq)]
 pub enum TileMode {
     #[default]
     Default = 0,
@@ -627,7 +627,7 @@ pub enum TileMode {
 }
 
 bitflags! {
-    #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+    #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
     pub struct Usage: u32 {
         const NONE = 0x0;
         const TEXTURE = 0x1;

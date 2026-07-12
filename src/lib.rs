@@ -14,7 +14,7 @@ pub use parser::{
     VarType,
 };
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct VertexShader {
     #[serde(with = "BigArray")]
     pub regs: [u32; 52],
@@ -90,7 +90,7 @@ impl VertexShader {
     pub const VGT_HOS_REUSE_DEPTH: usize = 51;
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct PixelShader {
     #[serde(with = "BigArray")]
     pub regs: [u32; 41],
@@ -149,7 +149,7 @@ impl PixelShader {
     pub const SPI_INPUT_Z: usize = 40;
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct GeometryShader {
     pub regs: [u32; 19],
     pub program: Vec<u8>,
@@ -165,7 +165,7 @@ pub struct GeometryShader {
     pub stream_out_stride: [u32; 4],
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ComputeShader {
     pub regs: [u32; 12],
     pub program: Vec<u8>,
@@ -180,7 +180,7 @@ pub struct ComputeShader {
     pub waves_per_simd: u32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Texture {
     pub surface: Surface,
     pub view_first_mip: u32,
@@ -191,14 +191,14 @@ pub struct Texture {
     pub regs: [u32; 5],
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct UniformBlock {
     pub name: String,
     pub location: u32,
     pub size: u32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct UniformVar {
     pub name: String,
     pub ty: VarType,
@@ -207,14 +207,14 @@ pub struct UniformVar {
     pub index: u32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct SamplerVar {
     pub name: String,
     pub ty: SamplerType,
     pub location: u32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct AttribVar {
     pub name: String,
     pub ty: VarType,
@@ -222,7 +222,7 @@ pub struct AttribVar {
     pub location: u32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Surface {
     pub dimension: Dimension,
     pub width: u32,
@@ -241,13 +241,11 @@ pub struct Surface {
     pub mip_level_offsets: [u32; 13],
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Gfx2 {
     pub magic: [u8; 4],
     pub version: (u8, u8),
     pub gpu: u8,
-    // pub align: u32,
-    // pub blocks: Vec<Block>,
     pub vertex: Vec<VertexShader>,
     pub pixel: Vec<PixelShader>,
     pub geometry: Vec<GeometryShader>,
