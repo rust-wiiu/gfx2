@@ -255,8 +255,8 @@ pub struct LoopVar {
 pub enum SamplerType {
     D1 = 0,
     D2 = 1,
-    D3 = 2,
-    Cube = 3,
+    D3 = 3,
+    Cube = 4,
 }
 
 #[binread]
