@@ -253,6 +253,21 @@ pub struct Gfx2 {
     pub texture: Vec<Texture>,
 }
 
+impl Default for Gfx2 {
+    fn default() -> Self {
+        Self {
+            magic: *b"Gfx2",
+            version: (7, 1),
+            gpu: 2,
+            vertex: Vec::new(),
+            pixel: Vec::new(),
+            geometry: Vec::new(),
+            compute: Vec::new(),
+            texture: Vec::new(),
+        }
+    }
+}
+
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("Failed to parse data")]
