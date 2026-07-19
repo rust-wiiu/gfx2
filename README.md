@@ -1,6 +1,6 @@
-# Gfx2 - Nintendo Wii U™ Shader Binary Format
+# Gfx2 - Nintendo Wii U™ Shader/Texture Binary Format
 
-Unlike more modern graphics APIs the Nintendo Wii U does not have a online shader compiler, so the shaders have to be pre-compiled and embedded into the program or stored in the file system. The most common format for such shader binaries is Gfx2 (`.gsh` / `.gtx`). This crate enables easy parsing of the binary format into "Rust-native" structures (Vec & String instead of raw pointers) and storing shaders in alternative data formats via serde.
+Unlike more modern graphics APIs the Nintendo Wii U does not have a online shader compiler, so the shaders have to be pre-compiled and embedded into the program or stored in the file system. The most common format for such shader binaries is Gfx2 (`.gsh`). This crate enables easy parsing of the binary format into "Rust-native" structures (Vec & String instead of raw pointers) and storing shaders in alternative data formats via serde.
 
 ## Usage
 
@@ -16,7 +16,7 @@ use std::fs;
 
 fn main() {
     let bytes = fs::read("shader.gsh").unwrap();
-    let gfx2 = Gfx2::parse(&bytes).unwrap();
+    let gfx2 = Gfx2::from_gsh(&bytes).unwrap();
 }
 ```
 

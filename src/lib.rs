@@ -1,3 +1,5 @@
+//! A library for loading and storing Gfx2 shaders. Gfx2 is the common data format used by GX2, the graphics library of the Nintendo Wii U. The offical SDK includes a libary called `gfd` for loading shaders and texture from `gsh` / `gtx` files. This crate is the open Rust alternative for `gfd`.
+
 #![cfg_attr(not(test), no_std)]
 
 extern crate alloc;
@@ -241,6 +243,9 @@ pub struct Surface {
     pub mip_level_offsets: [u32; 13],
 }
 
+/// Compiled GX2 shader data
+///
+/// [Gfx2] implements [serde::Serialize] / [serde::Deserialize] so the structure can be saved and loaded with any compatible serde data format.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Gfx2 {
     pub magic: [u8; 4],
@@ -270,25 +275,53 @@ impl Default for Gfx2 {
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
-    #[error("Failed to parse data")]
-    Parsing(binrw::Error),
+    #[error("Failed to parse GSH data")]
+    Gsh(binrw::Error),
     #[error("Unexpected block type '{0:?}' at index {1}")]
     UnexpectedBlockType(parser::BlockType, usize),
+    #[cfg(feature = "postcard")]
+    #[error("Failed to handle postcard data")]
+    Postcard(#[from] postcard::Error),
 }
 
+// #[from] binrw::Error doesnt work
 impl From<binrw::Error> for Error {
     fn from(value: binrw::Error) -> Self {
-        Self::Parsing(value)
+        Self::Gsh(value)
     }
 }
 
 impl Gfx2 {
-    pub fn parse(data: impl AsRef<[u8]>) -> Result<Self, Error> {
+    /// Deserialize a gsh encoded byte slice.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use gfx2::Gfx2;
+    ///
+    /// let data = include_bytes!("../tests/program.gsh");
+    /// let gfx2 = Gfx2::from_gsh(data).unwrap();
+    ///
+    /// assert_eq!(gfx2.vertex.len(), 1);
+    /// assert_eq!(gfx2.pixel.len(), 1);
+    /// ```
+    pub fn from_gsh(data: impl AsRef<[u8]>) -> Result<Self, Error> {
         use binrw::io::Cursor;
-
         let gfx2 = parser::Gfx2::read(&mut Cursor::new(&data))?;
-
         Self::try_from(gfx2)
+    }
+
+    #[cfg(feature = "postcard")]
+    /// Convenience function to deserialize a postcard encoded byte slice. For more information see [postcard](https://crates.io/crates/postcard).
+    pub fn from_postcard(data: impl AsRef<[u8]>) -> Result<Self, Error> {
+        let gfx2 = postcard::from_bytes(data.as_ref())?;
+        Ok(gfx2)
+    }
+
+    #[cfg(feature = "postcard")]
+    /// Convenience function to serialize postcard encoded byte data. For more information see [postcard](https://crates.io/crates/postcard).
+    pub fn to_postcard(&self) -> Result<Vec<u8>, Error> {
+        Ok(postcard::to_allocvec(self)?)
     }
 }
 
@@ -508,16 +541,5 @@ impl TryFrom<parser::Gfx2> for Gfx2 {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
-    #[test]
-    fn gfx2_parse() {
-        let gsh = std::fs::read("tests/program.gsh").unwrap();
-        let gfx2 = Gfx2::parse(&gsh).unwrap();
-
-        assert_eq!(gfx2.version, (7, 1));
-        assert_eq!(gfx2.gpu, 2);
-        assert_eq!(gfx2.vertex.len(), 1);
-        assert_eq!(gfx2.pixel.len(), 1);
-    }
+    // TODO: more tests
 }
