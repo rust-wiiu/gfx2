@@ -312,14 +312,18 @@ impl Gfx2 {
     }
 
     #[cfg(feature = "postcard")]
-    /// Convenience function to deserialize a postcard encoded byte slice. For more information see [postcard](https://crates.io/crates/postcard).
+    /// Convenience function to deserialize from bytes.
+    ///
+    /// For more information about the format see [postcard](https://crates.io/crates/postcard)
     pub fn from_bytes(data: impl AsRef<[u8]>) -> Result<Self, Error> {
         let gfx2 = postcard::from_bytes(data.as_ref())?;
         Ok(gfx2)
     }
 
     #[cfg(feature = "postcard")]
-    /// Convenience function to serialize postcard encoded byte data. For more information see [postcard](https://crates.io/crates/postcard).
+    /// Convenience function to serialize to bytes.
+    ///
+    /// For more information about the format see [postcard](https://crates.io/crates/postcard)
     pub fn to_bytes(&self) -> Result<Vec<u8>, Error> {
         Ok(postcard::to_allocvec(self)?)
     }
