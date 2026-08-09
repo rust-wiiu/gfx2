@@ -245,9 +245,9 @@ pub struct Surface {
 
 /// Compiled GX2 shader data
 ///
-/// [Gfx2] implements [serde::Serialize] / [serde::Deserialize] so the structure can be saved and loaded with any compatible serde data format.
+/// [Shader] implements [serde::Serialize] / [serde::Deserialize] so the structure can be saved and loaded with any compatible serde data format.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct Gfx2 {
+pub struct Shader {
     pub magic: [u8; 4],
     pub version: (u8, u8),
     pub gpu: u8,
@@ -258,7 +258,7 @@ pub struct Gfx2 {
     pub texture: Vec<Texture>,
 }
 
-impl Default for Gfx2 {
+impl Default for Shader {
     fn default() -> Self {
         Self {
             magic: *b"Gfx2",
@@ -291,19 +291,19 @@ impl From<binrw::Error> for Error {
     }
 }
 
-impl Gfx2 {
+impl Shader {
     /// Deserialize a gsh encoded byte slice.
     ///
     /// # Example
     ///
     /// ```
-    /// use gfx2::Gfx2;
+    /// use gfx2::Shader;
     ///
     /// let data = include_bytes!("../tests/program.gsh");
-    /// let gfx2 = Gfx2::from_gsh(data).unwrap();
+    /// let shader = Shader::from_gsh(data).unwrap();
     ///
-    /// assert_eq!(gfx2.vertex.len(), 1);
-    /// assert_eq!(gfx2.pixel.len(), 1);
+    /// assert_eq!(shader.vertex.len(), 1);
+    /// assert_eq!(shader.pixel.len(), 1);
     /// ```
     pub fn from_gsh(data: impl AsRef<[u8]>) -> Result<Self, Error> {
         use binrw::io::Cursor;
@@ -329,7 +329,7 @@ impl Gfx2 {
     }
 }
 
-impl TryFrom<parser::Gfx2> for Gfx2 {
+impl TryFrom<parser::Gfx2> for Shader {
     type Error = Error;
 
     fn try_from(value: parser::Gfx2) -> Result<Self, Self::Error> {

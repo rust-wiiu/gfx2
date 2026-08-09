@@ -11,12 +11,12 @@ cargo add gfx2
 ### main.rs
 
 ```rust,no_run
-use gfx2::Gfx2;
+use gfx2::Shader;
 use std::fs;
 
 fn main() {
     let bytes = fs::read("shader.gsh").unwrap();
-    let gfx2 = Gfx2::from_gsh(&bytes).unwrap();
+    let gfx2 = Shader::from_gsh(&bytes).unwrap();
 }
 ```
 
