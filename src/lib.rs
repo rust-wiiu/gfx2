@@ -206,7 +206,7 @@ pub struct UniformVar {
     pub ty: VarType,
     pub count: u32,
     pub offset: u32,
-    pub index: u32,
+    pub index: i32,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
